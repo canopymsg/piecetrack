@@ -1,2 +1,0 @@
-# piecetrack
-Tracking of pieces 
