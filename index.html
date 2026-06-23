@@ -924,10 +924,10 @@ function buildGridSVG(svgId) {
   OUTSIDE_B_LETTERS.forEach((j,ri)=>{
     const rowTxt=makeSVGEl('text',{x:mL-3,y:mT+ri*cellH+cellH*0.65,'text-anchor':'end','class':'zone-label'});
     rowTxt.textContent=j; svg.appendChild(rowTxt);
-    for(let k=0;k<OUTSIDE_B_COLS;k++){
+    for(let k=0;k<OUTSIDE_B_COLS;k+=5){
       const x=mL+k*cellW, y=mT+ri*cellH;
       const zoneKey='outside|B|'+j+k;
-      const rect=makeSVGEl('rect',{x,y,width:cellW,height:cellH,'class':'zone-cell','data-zone':zoneKey});
+      const rect=makeSVGEl('rect',{x,y,width:cellW*5,height:cellH,'class':'zone-cell','data-zone':zoneKey});
       rect.addEventListener('click',()=>clickZoneCell(zoneKey));
       svg.appendChild(rect);
     }
