@@ -1110,7 +1110,7 @@ function renderZoneResults() {
 }
 
 // Utility to escape HTML characters avoiding XSS
-function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // Quick action: switch back to the text search tab and run it
 function jumpToPartSearch(piece,pkg) {
@@ -1348,11 +1348,11 @@ async function pullFromSheets() {
         DB.push({
           id:       id,
           date:     row['Date']            || '',
-          piece:    row['Piece ID']        || '',
-          package:  row['Package No.']    || '',
-          location: (row['_sheet'] || '').toLowerCase(),
-          zone:     row['Zone']            || '',
-          comment:  row['Comment']         || '',
+          piece:    String(row['Piece ID'] || ''),
+          package:  String(row['Package No.'] || ''),
+          location: String(row['_sheet'] || '').toLowerCase(),
+          zone:     String(row['Zone'] || ''),
+          comment:  String(row['Comment'] || ''),
           photo:    null,
           photoUrl: row['Photo URL']       || '',
           synced:   true
@@ -1387,8 +1387,8 @@ function runSearch(){
   }
   
   lastResults=DB.filter(p=>{
-    const matchPiece=!piece||p.piece.toLowerCase().includes(piece);
-    const matchPkg=!pkg||p.package.toLowerCase().includes(pkg);
+    const matchPiece=!piece||String(p.piece).toLowerCase().includes(piece);
+    const matchPkg=!pkg||String(p.package).toLowerCase().includes(pkg);
     const matchLoc=currentLocFilter==='all'||p.location===currentLocFilter;
     return matchPiece&&matchPkg&&matchLoc;
   });
@@ -1601,6 +1601,14 @@ dzEl.addEventListener('drop',e=>{e.preventDefault();dzEl.classList.remove('drag-
 window.addEventListener('resize',()=>{if(document.getElementById('panel-search').classList.contains('active')&&document.getElementById('search-panel-zone').style.display==='block'){buildGridSVG('svg-OB');colorZoneCells();}});
 
 // Bootstrap application logic
+  /* =========================================
+    importants things: 
+-sheet link: https://docs.google.com/spreadsheets/d/1xniLJbDFaIDrqFG7AQdqQT2wJDqNcVcCOSDvslyIUJE/edit?pli=1&gid=1182185118#gid=1182185118
+-drive link: https://drive.google.com/drive/my-drive?hl=pt-br
+-GAS link: https://script.google.com/u/0/home/projects/1xyFV-j6c1RsrzVdHY9QQwpDDVGbVIjY0pe9BVMRp_vzgbU8osjwWqM9n/edit
+-hostsite link: https://github.com/canopymsg/piecetrack
+  ========================================= */ 
+
 init();
 </script>
 </body>
