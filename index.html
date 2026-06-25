@@ -361,7 +361,7 @@
       </div>
       <div class="position-wrap" id="pos-canopy-A">
         <div class="field" style="margin-bottom:0;margin-top:10px;">
-          <label>Position i<sub>c</sub> (1 → 10)</label>
+          <label>Position i<sub>c</sub> (1 → 9)</label>
           <select id="c-a-i" onchange="updateZonePreview()">
             <option value="">— select i<sub>c</sub> —</option>
           </select>
@@ -369,7 +369,7 @@
       </div>
       <div class="position-wrap" id="pos-canopy-B">
         <div class="field" style="margin-bottom:0;margin-top:10px;">
-          <label>Position i<sub>c</sub> (1 → 10)</label>
+          <label>Position i<sub>c</sub> (1 → 7)</label>
           <select id="c-b-i" onchange="updateZonePreview()">
             <option value="">— select i<sub>c</sub> —</option>
           </select>
@@ -377,7 +377,7 @@
       </div>
       <div class="position-wrap" id="pos-canopy-C">
         <div class="field" style="margin-bottom:0;margin-top:10px;">
-          <label>Position i<sub>c</sub> (1 → 10)</label>
+          <label>Position i<sub>c</sub> (1 → 11)</label>
           <select id="c-c-i" onchange="updateZonePreview()">
             <option value="">— select i<sub>c</sub> —</option>
           </select>
@@ -634,7 +634,7 @@
    APPLICATION CONSTANTS & CONFIG
 ========================================= */
 const CANOPY_ZONES = ['A','B','C'];
-const CANOPY_POS_MAX = 10;  // ic ranges from 1 to 10
+const CANOPY_POS_MAX = { A: 9, B: 7, C: 11 };  // ic ranges specific to each zone
 const OUTSIDE_A_MAX = 14;   // i ranges from 1 to 14
 const OUTSIDE_B_LETTERS = ['a','b','c','d','e'];
 const OUTSIDE_B_COLS = 101; // k ranges from 0 to 100
@@ -666,10 +666,15 @@ let currentLocFilter = 'all';
    INITIALIZATION
 ========================================= */
 function init() {
-  // Populate Canopy position dropdowns (ic = 1..10) for zones A, B, C
-  ['c-a-i','c-b-i','c-c-i'].forEach(id => {
-    const sel = document.getElementById(id);
-    for(let i=1;i<=CANOPY_POS_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);}
+  // Populate Canopy position dropdowns for zones A, B, C
+  const canopyConfigs = [
+    { id: 'c-a-i', max: CANOPY_POS_MAX.A },
+    { id: 'c-b-i', max: CANOPY_POS_MAX.B },
+    { id: 'c-c-i', max: CANOPY_POS_MAX.C }
+  ];
+  canopyConfigs.forEach(cfg => {
+    const sel = document.getElementById(cfg.id);
+    for(let i=1;i<=cfg.max;i++){const o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);}
   });
   
   // Populate Outside A dropdown (i = 1..14)
@@ -876,9 +881,9 @@ function setLocFilter(f, silent) {
    INTERACTIVE SVG ZONE MAPS
 ========================================= */
 function buildZoneSVGs() {
-  buildSimpleLineSVG('svg-CA', 'canopy', 'A', CANOPY_POS_MAX);
-  buildSimpleLineSVG('svg-CB', 'canopy', 'B', CANOPY_POS_MAX);
-  buildSimpleLineSVG('svg-CC', 'canopy', 'C', CANOPY_POS_MAX);
+  buildSimpleLineSVG('svg-CA', 'canopy', 'A', CANOPY_POS_MAX.A);
+  buildSimpleLineSVG('svg-CB', 'canopy', 'B', CANOPY_POS_MAX.B);
+  buildSimpleLineSVG('svg-CC', 'canopy', 'C', CANOPY_POS_MAX.C);
   buildSimpleLineSVG('svg-OA', 'outside', 'A', OUTSIDE_A_MAX);
   buildGridSVG('svg-OB');
   colorZoneCells();
@@ -1035,7 +1040,8 @@ function onZoneSubTypeChange() {
   
   if(loc==='canopy') {
     posSel.innerHTML='<option value="">All positions</option>';
-    for(let i=1;i<=CANOPY_POS_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent=sub+i;posSel.appendChild(o);}
+    const maxPos = CANOPY_POS_MAX[sub];
+    for(let i=1;i<=maxPos;i++){const o=document.createElement('option');o.value=i;o.textContent=sub+i;posSel.appendChild(o);}
     posWrap.style.display='block';
   } else if(loc==='outside' && sub==='A') {
     posSel.innerHTML='<option value="">All positions</option>';
@@ -1603,7 +1609,7 @@ dzEl.addEventListener('drop',e=>{e.preventDefault();dzEl.classList.remove('drag-
 ========================================= */
 window.addEventListener('resize',()=>{if(document.getElementById('panel-search').classList.contains('active')&&document.getElementById('search-panel-zone').style.display==='block'){buildGridSVG('svg-OB');colorZoneCells();}});
 
-// Bootstrap application logic
+
   /* =========================================
     importants things: 
 -sheet link: https://docs.google.com/spreadsheets/d/1xniLJbDFaIDrqFG7AQdqQT2wJDqNcVcCOSDvslyIUJE/edit?pli=1&gid=1182185118#gid=1182185118
@@ -1612,6 +1618,7 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-search')
 -hostsite link: https://github.com/canopymsg/piecetrack
   ========================================= */ 
 
+// Bootstrap application logic
 init();
 </script>
 </body>
