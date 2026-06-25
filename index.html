@@ -1048,6 +1048,7 @@ function onZoneSubTypeChange() {
 }
 
 // Renders the list of parts mapped to the filtered zone parameters
+// Renders the list of parts mapped to the filtered zone parameters
 function renderZoneResults() {
   colorZoneCells();
   const loc=document.getElementById('zs-loc').value;
@@ -1056,20 +1057,20 @@ function renderZoneResults() {
   let filtered=DB.filter(p=>p.zone);
   if(loc) filtered=filtered.filter(p=>p.location===loc);
   if(sub) {
-    if(loc==='canopy') filtered=filtered.filter(p=>p.zone&&p.zone[0]===sub);
-    else if(loc==='outside') filtered=filtered.filter(p=>p.zone&&p.zone[0]===sub);
+    if(loc==='canopy') filtered=filtered.filter(p=>p.zone && String(p.zone)[0]===sub);
+    else if(loc==='outside') filtered=filtered.filter(p=>p.zone && String(p.zone)[0]===sub);
   }
   
   const posVal=document.getElementById('zs-pos').value;
   if(posVal) {
-    if(loc==='canopy') filtered=filtered.filter(p=>p.zone&&p.zone.slice(1)===''+posVal);
-    else if(loc==='outside' && sub==='A') filtered=filtered.filter(p=>p.zone==='A'+posVal);
+    if(loc==='canopy') filtered=filtered.filter(p=>p.zone && String(p.zone).slice(1)===''+posVal);
+    else if(loc==='outside' && sub==='A') filtered=filtered.filter(p=>String(p.zone)==='A'+posVal);
   }
   const jv=document.getElementById('zs-b-j').value;
   const kv=document.getElementById('zs-b-k').value;
   if(loc==='outside' && sub==='B') {
-    if(jv) filtered=filtered.filter(p=>p.zone&&p.zone[1]===jv);
-    if(kv!=='') filtered=filtered.filter(p=>p.zone&&p.zone.slice(2)===''+kv);
+    if(jv) filtered=filtered.filter(p=>p.zone && String(p.zone)[1]===jv);
+    if(kv!=='') filtered=filtered.filter(p=>p.zone && String(p.zone).slice(2)===''+kv);
   }
   
   const container=document.getElementById('zone-results-container');
@@ -1108,9 +1109,9 @@ function renderZoneResults() {
     </div>`;
   }).join('');
 }
-
 // Utility to escape HTML characters avoiding XSS
-function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// Utility to escape HTML characters avoiding XSS
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 // Quick action: switch back to the text search tab and run it
 function jumpToPartSearch(piece,pkg) {
@@ -1387,10 +1388,12 @@ function runSearch(){
   }
   
   lastResults=DB.filter(p=>{
-    const matchPiece=!piece||String(p.piece).toLowerCase().includes(piece);
-    const matchPkg=!pkg||String(p.package).toLowerCase().includes(pkg);
-    const matchLoc=currentLocFilter==='all'||p.location===currentLocFilter;
-    return matchPiece&&matchPkg&&matchLoc;
+    const pPiece = String(p.piece || '').toLowerCase();
+    const pPkg = String(p.package || '').toLowerCase();
+    const matchPiece = !piece || pPiece.includes(piece);
+    const matchPkg = !pkg || pPkg.includes(pkg);
+    const matchLoc = currentLocFilter==='all' || p.location===currentLocFilter;
+    return matchPiece && matchPkg && matchLoc;
   });
   
   document.getElementById('results-count').textContent=lastResults.length;
@@ -1428,7 +1431,7 @@ function runSearch(){
           ${p.zone?`<span class="tag tag-zone">📐 ${escHtml(p.zone)}</span>`:''}
           <span class="tag ${p.synced?'tag-synced':'tag-local'}">${p.synced?'☁ Synced':'💾 Local'}</span>
         </div>
-        <div class="result-date">🕐 ${new Date(p.date).toLocaleString('en-GB')}${p.comment?' — '+p.comment:''}</div>
+        <div class="result-date">🕐 ${new Date(p.date).toLocaleString('en-GB')}${p.comment?' — '+escHtml(p.comment):''}</div>
         <div class="result-actions">
           ${driveBtn}
           <button class="btn-card btn-card-del" onclick="askDelete(${p.id})">🗑 Delete</button>
