@@ -393,7 +393,7 @@
       </div>
       <div class="position-wrap" id="pos-outside-A">
         <div class="field" style="margin-bottom:0;margin-top:10px;">
-          <label>Position i (1 → 14)</label>
+          <label>Position i (1 → 7)</label>
           <select id="o-a-i" onchange="updateZonePreview()">
             <option value="">— select i —</option>
           </select>
@@ -635,7 +635,7 @@
 ========================================= */
 const CANOPY_ZONES = ['A','B','C'];
 const CANOPY_POS_MAX = { A: 9, B: 7, C: 11 };  // ic ranges specific to each zone
-const OUTSIDE_A_MAX = 7;   // i ranges from 0 to 7
+const OUTSIDE_A_MAX = 7;   // i ranges from 1 to 7
 const OUTSIDE_B_LETTERS = ['a','b','c','d','e'];
 const OUTSIDE_B_COLS = 101; // k ranges from 0 to 100
 
@@ -894,11 +894,16 @@ function buildSimpleLineSVG(svgId, loc, subzone, count) {
   const svg = document.getElementById(svgId);
   if(!svg) return;
   const cellH=12, cellW=60, mL=22, mT=4;
+  
+  // Start point: 0 if in Outside A, else 1
+  const start = (loc === 'outside' && subzone === 'A') ? 0 : 1; 
+  const totalCells = count - start + 1;
+  
   svg.setAttribute('width', mL+cellW+4);
-  svg.setAttribute('height', count*cellH+mT*2);
+  svg.setAttribute('height', totalCells*cellH+mT*2);
   svg.innerHTML='';
-  for(let i=1;i<=count;i++){
-    const y=mT+(i-1)*cellH;
+  for(let i=start; i<=count; i++){
+    const y=mT+(i-start)*cellH;
     const zoneKey = loc+'|'+subzone+'|'+i;  // Internal identifier
     const rect=makeSVGEl('rect',{x:mL,y,width:cellW,height:cellH,'class':'zone-cell','data-zone':zoneKey});
     rect.addEventListener('click',()=>clickZoneCell(zoneKey));
