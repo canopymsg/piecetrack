@@ -635,7 +635,7 @@
 ========================================= */
 const CANOPY_ZONES = ['A','B','C'];
 const CANOPY_POS_MAX = { A: 9, B: 7, C: 11 };  // ic ranges specific to each zone
-const OUTSIDE_A_MAX = 14;   // i ranges from 1 to 14
+const OUTSIDE_A_MAX = 7;   // i ranges from 0 to 7
 const OUTSIDE_B_LETTERS = ['a','b','c','d','e'];
 const OUTSIDE_B_COLS = 101; // k ranges from 0 to 100
 
@@ -677,9 +677,9 @@ function init() {
     for(let i=1;i<=cfg.max;i++){const o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);}
   });
   
-  // Populate Outside A dropdown (i = 1..14)
+  // Populate Outside A dropdown (i = 0..7)
   const oAI = document.getElementById('o-a-i');
-  for(let i=1;i<=OUTSIDE_A_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent=i;oAI.appendChild(o);}
+  for(let i=0;i<=OUTSIDE_A_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent=i;oAI.appendChild(o);}
   
   // Populate Outside B columns dropdown (0..100, step 5)
   const oBK = document.getElementById('o-b-k');
@@ -1045,7 +1045,7 @@ function onZoneSubTypeChange() {
     posWrap.style.display='block';
   } else if(loc==='outside' && sub==='A') {
     posSel.innerHTML='<option value="">All positions</option>';
-    for(let i=1;i<=OUTSIDE_A_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent='A'+i;posSel.appendChild(o);}
+    for(let i=0;i<=OUTSIDE_A_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent='A'+i;posSel.appendChild(o);}
     posWrap.style.display='block';
   } else if(loc==='outside' && sub==='B') {
     bWrap.style.display='grid';
