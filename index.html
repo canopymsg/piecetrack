@@ -393,7 +393,7 @@
       </div>
       <div class="position-wrap" id="pos-outside-A">
         <div class="field" style="margin-bottom:0;margin-top:10px;">
-          <label>Position i (1 → 7)</label>
+          <label>Position i (0 → 8)</label>
           <select id="o-a-i" onchange="updateZonePreview()">
             <option value="">— select i —</option>
           </select>
@@ -635,7 +635,7 @@
 ========================================= */
 const CANOPY_ZONES = ['A','B','C'];
 const CANOPY_POS_MAX = { A: 9, B: 7, C: 11 };  // ic ranges specific to each zone
-const OUTSIDE_A_MAX = 7;   // i ranges from 1 to 7
+const OUTSIDE_A_MAX = 8;   // i ranges from 0 to 8
 const OUTSIDE_B_LETTERS = ['a','b','c','d','e'];
 const OUTSIDE_B_COLS = 101; // k ranges from 0 to 100
 
@@ -677,7 +677,7 @@ function init() {
     for(let i=1;i<=cfg.max;i++){const o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);}
   });
   
-  // Populate Outside A dropdown (i = 0..7)
+  // Populate Outside A dropdown (i = 0..8)
   const oAI = document.getElementById('o-a-i');
   for(let i=0;i<=OUTSIDE_A_MAX;i++){const o=document.createElement('option');o.value=i;o.textContent=i;oAI.appendChild(o);}
   
